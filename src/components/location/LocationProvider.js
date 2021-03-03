@@ -8,9 +8,14 @@ export const LocationProvider = (props) => {
     const [locations, setLocations] = useState([])
 
     const getLocations = () => {
-        return fetch("http://localhost:8088/locations")
+        return fetch("http://localhost:8088/locations?_embed=employees&_embed=animals")
         .then(res => res.json())
         .then(setLocations)
+    }
+
+    const getLocationById = (id) => {
+        return fetch(`http://localhost:8088/locations/${id}?_embed=employees&_embed=animals`)
+        .then(response => response.json())
     }
 
     const addLocation = locationObj => {
@@ -24,6 +29,7 @@ export const LocationProvider = (props) => {
         .then(getLocations)
     }
 
+
     /*
         You return a context provider which has the
         `locations` state, `getLocations` function,
@@ -32,7 +38,7 @@ export const LocationProvider = (props) => {
     */
     return (
         <LocationContext.Provider value={{
-            locations, getLocations, addLocation
+            locations, getLocations, addLocation, getLocationById
         }}>
             {props.children}
         </LocationContext.Provider>
