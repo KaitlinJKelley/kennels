@@ -73,8 +73,8 @@ export const ApplicationViews = () => {
                     </Route>
                     
                     <Route path="/employees/detail/:employeeId(\d+)">
-                            <EmployeeDetail />
-                        </Route>
+                        <EmployeeDetail />
+                    </Route>
                 </LocationProvider>
             </EmployeeProvider>
         </>
