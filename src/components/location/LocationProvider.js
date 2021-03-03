@@ -13,8 +13,8 @@ export const LocationProvider = (props) => {
         .then(setLocations)
     }
 
-    const getLocationById = id => {
-        fetch(`http://localhost:8088/locations/${id}?_embed=employees&_embed=animals`)
+    const getLocationById = (id) => {
+        return fetch(`http://localhost:8088/locations/${id}?_embed=employees&_embed=animals`)
         .then(response => response.json())
     }
 
