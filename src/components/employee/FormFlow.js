@@ -9,7 +9,7 @@
 //     check to see if the user selected a location
 //         if true (animal.locationId === 0), tell the user to select a location
 //         else, setIsLoading(true) disables the Save button
-//     check to see if animalId exists (the user selected Edit Animal from the Detail page which includes a dynamic param equal to animal.id)
+//     check to see if animalId exists (the user selected Edit Animal which includes a dynamic param equal to animal.id)
 //         If true, invoke UpdateAnimal function with following object: 
 //             {
 //                 id: animal.id,
@@ -34,7 +34,7 @@
 // return JSX containing form 
 //             Note: All fields the user can change have an event listener to invoke handleControlledInputChange
 //                   Save button will:
-//                     check to see if animalId exists and returns true or false to be used by animalId checks in functions
+//                     check to see if animalId exists and returns true or false and return appropriate string for button text
 //                     prevents default on click
 //                     invokes handleSaveAnimal on click 
 

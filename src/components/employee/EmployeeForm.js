@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react"
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { EmployeeContext } from "../employee/EmployeeProvider"
 import { LocationContext } from "../location/LocationProvider"
 
 export const EmployeeForm = () => {
-    const { addEmployee } = useContext(EmployeeContext)
+    const { addEmployee, updateEmployee, getEmployeeById } = useContext(EmployeeContext)
     const { locations, getLocations } = useContext(LocationContext)
 
     /*
@@ -12,44 +12,36 @@ export const EmployeeForm = () => {
 
     Define the intial state of the form inputs with useState()
     */
-
-    const [employee, setEmployee] = useState({
-      name: "",
-      locationId: 0
+   
+   const [employee, setEmployee] = useState({
+     name: "",
+     locationId: 0
     });
-
+    
+    const [isLoading, setIsLoading] = useState(true)
+    
     const history = useHistory();
-
-    /*
-    Reach out to the world and get customers state
-    and locations state on initialization, so we can provide their data in the form dropdowns
-    */
-   useEffect(() => {
-	getLocations()
-    }, [])
+    const {employeeId} = useParams()
+    console.log("employeeId", employeeId)
 
     //when a field changes, update state. The return will re-render and display based on the values in state
         // NOTE! What's happening in this function can be very difficult to grasp. Read it over many times and ask a lot questions about it.
     //Controlled component
     const handleControlledInputChange = (event) => {
+      // Copy, Reassign, Set
       /* When changing a state object or array,
       always create a copy, make changes, and then set state.*/
       const newEmployee = { ...employee }
-      let selectedVal = event.target.value
-      // forms always provide values as strings. But we want to save the ids as numbers. This will cover both customer and location ids
-      if (event.target.id.includes("Id")) {
-        selectedVal = parseInt(selectedVal)
-      }
       /* Animal is an object with properties.
       Set the property to the new value
       using object bracket notation. */
-      newEmployee[event.target.id] = selectedVal
+      newEmployee[event.target.id] = event.target.value
       // update state
       setEmployee(newEmployee)
+      console.log("At Input Change", newEmployee)
     }
 
-    const handleClickSaveEmployee = (event) => {
-      event.preventDefault() //Prevents the browser from submitting the form
+    const handleClickSaveEmployee = () => {
 
       const employeeName = employee.name
       const employeeLocation = employee.locationId
@@ -57,12 +49,40 @@ export const EmployeeForm = () => {
       if (employeeName === "" || employeeLocation === 0) {
         window.alert("Please input an employee name and choose a location")
       } else {
-        //invoke addAnimal passing employee as an argument.
-        //once complete, change the url and display the employee list
-        addEmployee(employee)
-        .then(() => history.push("/employees"))
+        // Prevents additional clicks after initial click, if all fields are correct
+        setIsLoading(true)
+      }
+      if (employeeId) {
+        // If employeeId exists, updateEmployee
+        updateEmployee({
+          id: employee.id,
+          name: employee.name,
+          locationId: parseInt(employee.locationId)
+        })
+        .then(history.push(`/employees/detail/${employee.id}`))
+      } else {
+        // If there is no employeeId addEmployee
+        addEmployee({
+          name: employee.name,
+          locationId: parseInt(employee.locationId)
+        })
+        .then(history.push(`/employees`))
       }
     }
+
+   useEffect(() => {
+     getLocations()
+     .then(() => {
+        if (employeeId) {
+          getEmployeeById(employeeId)
+          .then(employee => setEmployee(employee))
+          .then(setIsLoading(false))
+        } else {
+          // User has to be able to click Save at least once to invoke handleClickSaveEmployee
+          setIsLoading(false)
+        }
+     })
+      }, [])
 
     return (
       <form className="employeeForm">
@@ -76,7 +96,7 @@ export const EmployeeForm = () => {
            <fieldset>
               <div className="form-group">
                   <label htmlFor="location">Assign to location: </label>
-                  <select defaultValue={employee.locationId} name="locationId" id="locationId" onChange={handleControlledInputChange} className="form-control" >
+                  <select  value={employee.locationId} name="locationId" id="locationId" onChange={handleControlledInputChange} className="form-control" >
                       <option value="0">Select a location</option>
                       {locations.map(l => (
                           <option key={l.id} value={l.id}>
@@ -87,8 +107,12 @@ export const EmployeeForm = () => {
               </div>
           </fieldset>
           <button className="btn btn-primary"
-            onClick={handleClickSaveEmployee}>
-            Save Employee
+            disabled={isLoading}
+            onClick={event => {
+              event.preventDefault() // Prevent browser from submitting the form and refreshing the page
+              handleClickSaveEmployee()
+          }}>
+            {employeeId ? "Save Employee" : "Add Employee"}
           </button>
       </form>
     )
