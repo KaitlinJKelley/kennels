@@ -25,6 +25,7 @@ export const EmployeeDetail = () => {
       <h3 className="employee__name">{employee.name}</h3>
       {/* What's up with the question mark???? See below.*/}
       <div className="employee__location">Location: {employee.location?.name}</div>
+      <button onClick={() => {history.push(`/employees/edit/${employee.id}`)}}>Edit</button>
     </section>
   )
 }
