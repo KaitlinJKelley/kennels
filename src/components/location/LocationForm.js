@@ -1,37 +1,65 @@
 import React, { useContext, useEffect, useState } from "react"
-import { useHistory } from 'react-router-dom';
 import { LocationContext } from "./LocationProvider"
+import { useHistory, useParams } from 'react-router-dom';
+
 
 export const LocationForm = () => {
-    const { addLocation } = useContext(LocationContext)
-
+    const { addLocation, updateLocation, getLocationById } = useContext(LocationContext)
+    
     const [location, setLocation] = useState(
         {
             name: "",
             address: ""
         }
-    )
-    const history = useHistory()
+        )
+        
+        const [isLoading, setIsLoading] = useState(true)
+        
+        const history = useHistory()
+        const { locationId } = useParams()
+    
 
     const handleControlledInputChange = (event) => {
         const newLocation = {...location}
-        let selectedVal = event.target.value
 
-        newLocation[event.target.id] = selectedVal
+        newLocation[event.target.id] = event.target.value
 
         setLocation(newLocation)
+        console.log(newLocation)
     }
 
     const handleClickSaveLocation = (event) => {
-        event.preventDefault()
-
         if (location.name === "" || location.address === "") {
             window.alert("Please input a location name and address")
         } else {
-            addLocation(location)
-            .then(history.push("/locations"))
+            setIsLoading(true)
+        }
+
+        if (locationId) {
+            updateLocation({
+                id: location.id,
+                name: location.name,
+                address: location.address
+            })
+            .then(history.push(`/locations/detail/${location.id}`))
+        } else {
+            addLocation({
+                name: location.name,
+                address: location.address
+            })
+            .then(history.push(`/locations`))
         }
     }
+
+    useEffect(() => {
+        if (locationId) {
+            getLocationById(locationId)
+            .then(location => {setLocation(location)})
+            .then(setIsLoading(false))
+        } else {
+            setIsLoading(false)
+        }
+    }, [])
 
     return (
         <form className="locationForm">
@@ -49,8 +77,12 @@ export const LocationForm = () => {
               </div>
           </fieldset>
           <button className="btn btn-primary"
-            onClick={handleClickSaveLocation}>
-            Save Location
+            disabled={isLoading}
+            onClick={event => {
+                event.preventDefault()
+                handleClickSaveLocation()
+            }}>
+            {locationId ? "Save Location" : "Add Location"}
           </button>
         </form>
     )

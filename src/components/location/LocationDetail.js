@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react"
 import { LocationContext } from "./LocationProvider"
 import userEvent from "@testing-library/user-event"
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 
 export const LocationDetail = () => {
 
@@ -10,7 +10,7 @@ export const LocationDetail = () => {
 	const [location, setLocation] = useState({})
 
 	const {locationId} = useParams();
-	// const history = useHistory();
+	const history = useHistory();
 
   useEffect(() => {
     getLocationById(locationId)
@@ -32,6 +32,7 @@ export const LocationDetail = () => {
                 <h5>Animals</h5> {
             location.animals?.map(animal => animal?.name)
             }</div>
+            <button onClick={() => {history.push(`/locations/edit/${location.id}`)}}>Edit</button>
         </section>
     )
 }

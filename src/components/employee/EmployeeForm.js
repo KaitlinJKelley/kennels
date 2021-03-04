@@ -109,9 +109,9 @@ export const EmployeeForm = () => {
           <button className="btn btn-primary"
             disabled={isLoading}
             onClick={event => {
-              event.preventDefault() // Prevent browser from submitting the form and refreshing the page
-              handleClickSaveEmployee()
-          }}>
+                event.preventDefault()
+                handleClickSaveEmployee()
+            }}>
             {employeeId ? "Save Employee" : "Add Employee"}
           </button>
       </form>

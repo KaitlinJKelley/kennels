@@ -37,7 +37,7 @@ export const EmployeeProvider = (props) => {
             },
             body: JSON.stringify(employeeObj)
         })
-        .then(getEmployees)
+        // .then(getEmployees)
     }
 
     /*
