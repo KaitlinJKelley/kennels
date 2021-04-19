@@ -13,9 +13,10 @@ export const AnimalForm = () => {
     //for edit, hold on to state of animal in this view
     const [animal, setAnimal] = useState({
       name: "",
-      breed: "",
+      species: "",
       customerId: 0,
-      locationId: 0
+      locationId: 0,
+      status: ""
     })
 
     //wait for data before button is active. Look at the button to see how it's setting itself to disabled or not based on this state
@@ -50,18 +51,20 @@ export const AnimalForm = () => {
           updateAnimal({
               id: animal.id,
               name: animal.name,
-              breed: animal.breed,
+              species: animal.species,
               locationId: parseInt(animal.locationId),
-              customerId: parseInt(animal.customerId)
+              customerId: parseInt(animal.customerId),
+              status: animal.status
           })
           .then(() => history.push(`/animals/detail/${animal.id}`))
         }else {
           //POST - add
           addAnimal({
               name: animal.name,
-              breed: animal.breed,
+              species: animal.species,
               locationId: parseInt(animal.locationId),
-              customerId: parseInt(animal.customerId)
+              customerId: parseInt(animal.customerId),
+              status: animal.status
           })
           .then(() => history.push("/animals"))
         }
@@ -97,8 +100,14 @@ export const AnimalForm = () => {
         </fieldset>
         <fieldset>
           <div className="form-group">
-              <label htmlFor="breed">Animal breed:</label>
-              <input type="text" id="breed" onChange={handleControlledInputChange} required autoFocus className="form-control" placeholder="Animal breed" value={animal.breed}/>
+              <label htmlFor="species">Animal species:</label>
+              <input type="text" id="species" onChange={handleControlledInputChange} required autoFocus className="form-control" placeholder="Animal species" value={animal.species}/>
+          </div>
+        </fieldset>
+        <fieldset>
+          <div className="form-group">
+              <label htmlFor="status">Animal status:</label>
+              <input type="text" id="status" onChange={handleControlledInputChange} required autoFocus className="form-control" placeholder="Animal status" value={animal.status}/>
           </div>
         </fieldset>
         <fieldset>

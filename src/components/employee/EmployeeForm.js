@@ -15,6 +15,7 @@ export const EmployeeForm = () => {
    
    const [employee, setEmployee] = useState({
      name: "",
+     address: "",
      locationId: 0
     });
     
@@ -57,6 +58,7 @@ export const EmployeeForm = () => {
         updateEmployee({
           id: employee.id,
           name: employee.name,
+          address: employee.address,
           locationId: parseInt(employee.locationId)
         })
         .then(history.push(`/employees/detail/${employee.id}`))
@@ -64,6 +66,7 @@ export const EmployeeForm = () => {
         // If there is no employeeId addEmployee
         addEmployee({
           name: employee.name,
+          address: employee.address,
           locationId: parseInt(employee.locationId)
         })
         .then(history.push(`/employees`))
@@ -91,6 +94,12 @@ export const EmployeeForm = () => {
               <div className="form-group">
                   <label htmlFor="name">Employee name:</label>
                   <input type="text" id="name" onChange={handleControlledInputChange} required autoFocus className="form-control" placeholder="Employee name" value={employee.name}/>
+              </div>
+          </fieldset>
+          <fieldset>
+              <div className="form-group">
+                  <label htmlFor="address">Employee address:</label>
+                  <input type="text" id="address" onChange={handleControlledInputChange} required autoFocus classaddress="form-control" placeholder="Employee address" value={employee.address}/>
               </div>
           </fieldset>
            <fieldset>

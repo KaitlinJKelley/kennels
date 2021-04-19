@@ -8,13 +8,13 @@ export const EmployeeProvider = (props) => {
     const [employees, setEmployees] = useState([])
 
     const getEmployees = () => {
-        return fetch("http://localhost:8088/employees?_expand=location")
+        return fetch("http://localhost:8088/employees")
         .then(res => res.json())
         .then(setEmployees)
     }
 
     const getEmployeeById = (id) => {
-        return fetch(`http://localhost:8088/employees/${id}?_expand=location`)
+        return fetch(`http://localhost:8088/employees/${id}`)
         .then(res => res.json())
     }
 
@@ -37,7 +37,13 @@ export const EmployeeProvider = (props) => {
             },
             body: JSON.stringify(employeeObj)
         })
-        // .then(getEmployees)
+    }
+
+    const terminateEmployee = employeeId => {
+        return fetch(`http://localhost:8088/employees/${employeeId}`, {
+            method: "DELETE"
+        })
+            .then(getEmployees)
     }
 
     /*
@@ -48,7 +54,7 @@ export const EmployeeProvider = (props) => {
     */
     return (
         <EmployeeContext.Provider value={{
-            employees, getEmployees, addEmployee, getEmployeeById, updateEmployee
+            employees, getEmployees, addEmployee, getEmployeeById, updateEmployee, terminateEmployee
         }}>
             {props.children}
         </EmployeeContext.Provider>
